@@ -24,18 +24,155 @@
             font-family: 'Indie Flower', cursive;
             padding: 20px;
             box-sizing: border-box;
-            overflow: hidden; /* အသည်းပုံလေးတွေ ဘေးထွက်ပြီး scroll bar မပေါ်စေရန် */
+            overflow: hidden;
             position: relative;
         }
 
-        /* နောက်ခံအသည်းပုံလေးများ ဖြာကျနေစေရန် CSS */
+        /* ================= PASSCODE SCREEN (ပန်းရောင်ဒီဇိုင်း) ================= */
+        .passcode-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #ffe5ec 0%, #ffc2d1 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .passcode-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .passcode-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 28px 24px;
+            border-radius: 24px;
+            box-shadow: 0 12px 30px rgba(255, 117, 143, 0.25);
+            text-align: center;
+            width: 100%;
+            max-width: 310px;
+            border: 2px solid #ffb3c6;
+        }
+
+        .passcode-title {
+            font-size: 26px;
+            color: #d6336c;
+            margin: 0 0 8px 0;
+            font-weight: bold;
+        }
+
+        .passcode-hint {
+            font-size: 16px;
+            color: #ff4d6d;
+            background-color: #fff0f3;
+            border: 1px dashed #ffb3c6;
+            border-radius: 12px;
+            padding: 4px 12px;
+            display: inline-block;
+            margin-bottom: 16px;
+            font-weight: bold;
+        }
+
+        .dots-container {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 2px solid #ff758f;
+            background-color: transparent;
+            transition: all 0.2s ease;
+        }
+
+        .dot.filled {
+            background-color: #ff4d6d;
+            border-color: #ff4d6d;
+            transform: scale(1.15);
+        }
+
+        .error-msg {
+            min-height: 24px;
+            color: #e01e37;
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .error-msg.show {
+            opacity: 1;
+            animation: shake 0.35s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            50% { transform: translateX(6px); }
+            75% { transform: translateX(-6px); }
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            justify-items: center;
+        }
+
+        .key-btn {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: none;
+            background-color: #fff0f3;
+            color: #c9184a;
+            font-family: 'Indie Flower', cursive;
+            font-size: 26px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(255, 117, 143, 0.2);
+            transition: transform 0.1s ease, background-color 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .key-btn:active {
+            transform: scale(0.9);
+            background-color: #ffccd5;
+        }
+
+        .key-btn.action-btn {
+            font-size: 19px;
+            background-color: #ffe5ec;
+        }
+
+        /* ================= မူရင်း စာအိတ် CODE (တစ်ခုမှ မပြောင်းလဲထားပါ) ================= */
         .falling-hearts-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none; /* စာအိတ်ကို နှိပ်ရာမှာ အနှောင့်အယှက်မဖြစ်စေရန် */
+            pointer-events: none;
             z-index: 0;
             overflow: hidden;
         }
@@ -62,23 +199,20 @@
             }
         }
 
-        /* နေရာတည်ငြိမ်အောင် Container တစ်ခုတည်းထဲ ထည့်ထားပါတယ် */
         .card-container {
             position: relative;
             width: var(--envelope-w);
-            height: calc(var(--envelope-h) + 120px); /* စာပွင့်ဖို့ နေရာအကျယ်အဝန်း */
+            height: calc(var(--envelope-h) + 120px);
             display: flex;
             flex-direction: column;
-            justify-content: flex-end; /* စာအိတ်ကို အောက်ခြေမှာ ကပ်ထားမယ် */
+            justify-content: flex-end;
             align-items: center;
             z-index: 1;
         }
 
-        /* Hey ! စာသားကို စာအိတ်အပေါ်နားလေးတင် ကပ်ထားပြီး 
-           z-index: 1 ပေးထားလို့ စာအိတ်ပွင့်လာရင် စာရွက်အောက် ရောက်သွားပါမယ် */
         .header-text {
             position: absolute;
-            bottom: calc(var(--envelope-h) + 10px); /* စာအိတ်အထက် ၁၀ ပစ်ဆယ်အကွာမှာ ကပ်ထားတာပါ */
+            bottom: calc(var(--envelope-h) + 10px);
             font-size: clamp(24px, 6vw, 40px);
             color: #333;
             text-align: center;
@@ -100,10 +234,9 @@
             height: 100%;
             background-color: #f0707c;
             border-radius: 8px;
-            z-index: 2; /* Hey စာသားထက် အပေါ်ရောက်စေရန် */
+            z-index: 2;
         }
 
-        /* စာအိတ်အဖုံး (Top Flap) */
         .envelope::before {
             content: "";
             position: absolute;
@@ -116,7 +249,6 @@
             transition: transform 0.4s ease, z-index 0.2s ease;
         }
 
-        /* စာအိတ်ကိုယ်ထည် (Front Side) */
         .envelope::after {
             content: "";
             position: absolute;
@@ -153,7 +285,7 @@
             background: white;
             padding: 15px;
             box-sizing: border-box;
-            z-index: 3; /* စာအိတ်အောက်ထဲမှာ ပုန်းနေမယ် */
+            z-index: 3;
             transition: transform 0.5s ease, height 0.5s ease;
             border-radius: 5px;
             font-family: 'Pyidaungsu', serif;
@@ -172,16 +304,14 @@
             text-align: left;
         }
 
-        /* ဖွင့်လိုက်တဲ့အချိန် အကျိုးသက်ရောက်မှု */
         .envelope-wrapper.open .envelope::before {
             transform: rotateX(180deg);
-            z-index: 2; /* အဖုံးပွင့်သွားရင် စာရွက်နောက် ရောက်သွားမယ် */
+            z-index: 2;
         }
 
-        /* စာရွက်အပေါ်တက်လာပြီး Hey စာသားကို ဖုံးအုပ်သွားစေရန် z-index မြှင့်လိုက်ပါတယ် */
         .envelope-wrapper.open .letter {
             transform: translateY(-130px); 
-            z-index: 10; /* ထိပ်ဆုံးကို ပို့လိုက်လို့ Hey စာသားကို ဖုံးသွားပါမယ် */
+            z-index: 10;
             height: 240px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
@@ -200,7 +330,6 @@
             z-index: 1;
         }
 
-        /* Mobile Screens */
         @media (max-width: 360px) {
             :root {
                 --envelope-w: 280px;
@@ -221,6 +350,39 @@
     </style>
 </head>
 <body>
+
+    <!-- PASSCODE SCREEN -->
+    <div class="passcode-screen" id="passcodeScreen">
+        <div class="passcode-card">
+            <div class="passcode-title">Enter Passcode 💕</div>
+            <div class="passcode-hint">Hint: Important Date🐰💕</div>
+            <div class="dots-container" id="dotsContainer">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+
+            <div class="error-msg" id="errorMsg">✖ Wrong Passcode</div>
+
+            <div class="keypad">
+                <button class="key-btn" onclick="pressKey('1')">1</button>
+                <button class="key-btn" onclick="pressKey('2')">2</button>
+                <button class="key-btn" onclick="pressKey('3')">3</button>
+                <button class="key-btn" onclick="pressKey('4')">4</button>
+                <button class="key-btn" onclick="pressKey('5')">5</button>
+                <button class="key-btn" onclick="pressKey('6')">6</button>
+                <button class="key-btn" onclick="pressKey('7')">7</button>
+                <button class="key-btn" onclick="pressKey('8')">8</button>
+                <button class="key-btn" onclick="pressKey('9')">9</button>
+                <button class="key-btn action-btn" onclick="clearCode()">C</button>
+                <button class="key-btn" onclick="pressKey('0')">0</button>
+                <button class="key-btn action-btn" onclick="deleteLast()">⌫</button>
+            </div>
+        </div>
+    </div>
+
     <!-- နောက်ခံအသည်းပုံလေးများ ထည့်ရန်နေရာ -->
     <div class="falling-hearts-container" id="heartsContainer"></div>
 
@@ -231,7 +393,7 @@
     <script>
         window.addEventListener("click", () => {
             const music = document.getElementById("bgm");
-            music.play();
+            music.play().catch(() => {});
         }, { once: true });
     </script>
 
@@ -245,7 +407,7 @@
                 <div class="letter">
                     <p>Happy 3 monthsary ပါ ​မောင်​မောင်​ရေ🙊 <br><br>
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;မမဆိုးသမျှ သည်းခံ​ပေးတယ် မမ စိတ်​ကောက်လဲ စိတ်ရှည်"နဲ့ ​ချော့ပြီး အလိုက်သိ​ပေးလို့ ​မောင်​မောင့်ကို ​ကျေးဇူးအများကြီးတင်ပါတယ်​နော် ​​ရှေ့​လျှောက်လဲ အများကြီး ချစ်​ပေးဖို့ မျှော်လင့်ပါတယ် ​ပေါက်စ​လေး​ရေ 🐣💕</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;မမဆိုးသမျှ သည်းခံ​ပေးတယ် မမ စိတ်​ကောက်လဲ စိတ်ရှည်"နဲ့ ​ချော့ပြီး အလိုက်သိ​ပေးလို့ ​မောင်​မောင့်ကို ​ကျေးဇူးအများကြီးတင်ပါတယ်​နော် ​​ရှေ့​လျှောက်လဲ အများကြီး ချစ်​ပေးဖို့ မျှော်လင့်ပါတယ် ​ပေါက်စ​လေး​ရေ 🐣💕<br>(သီချင်း​လေးအတိုင်းပါဘဲ​နော်😽🎀)</p>
                 </div>
             </div>
         </div>
@@ -254,23 +416,109 @@
     <div class="footer-text">you've got a new message</div>
 
     <script>
+        // ================= PASSCODE & CLICK SOUND SCRIPT =================
+        const CORRECT_CODE = "23826";
+        let currentInput = "";
+        let isChecking = false;
+
+        // ခလုတ်နှိပ်တိုင်း Click အသံလေး ထွက်စေမည့် Web Audio API
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playClickSound() {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(750, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.04);
+            
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.04);
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, idx) => {
+                if (idx < currentInput.length) {
+                    dot.classList.add('filled');
+                } else {
+                    dot.classList.remove('filled');
+                }
+            });
+        }
+
+        function pressKey(num) {
+            if (isChecking || currentInput.length >= 5) return;
+            playClickSound();
+            document.getElementById('errorMsg').classList.remove('show');
+            
+            currentInput += num;
+            updateDots();
+
+            if (currentInput.length === 5) {
+                isChecking = true;
+                setTimeout(verifyPasscode, 200);
+            }
+        }
+
+        function deleteLast() {
+            if (isChecking || currentInput.length === 0) return;
+            playClickSound();
+            document.getElementById('errorMsg').classList.remove('show');
+            currentInput = currentInput.slice(0, -1);
+            updateDots();
+        }
+
+        function clearCode() {
+            if (isChecking) return;
+            playClickSound();
+            document.getElementById('errorMsg').classList.remove('show');
+            currentInput = "";
+            updateDots();
+        }
+
+        function verifyPasscode() {
+            if (currentInput === CORRECT_CODE) {
+                document.getElementById('passcodeScreen').classList.add('hidden');
+                const music = document.getElementById("bgm");
+                music.play().catch(() => {});
+            } else {
+                const errorEl = document.getElementById('errorMsg');
+                errorEl.classList.remove('show');
+                void errorEl.offsetWidth; // Animation ပြန်စေရန်
+                errorEl.classList.add('show');
+                
+                setTimeout(() => {
+                    currentInput = "";
+                    updateDots();
+                    isChecking = false;
+                }, 600);
+            }
+        }
+
+        // ================= မူရင်း စာအိတ်နှင့် အသည်းပုံ SCRIPT =================
         function toggleLetter() {
             document.querySelector('.envelope-wrapper').classList.toggle('open');
         }
 
-        // အသည်းပုံအနီလေးများ ဖြာကျစေသည့် Script
         function createHeart() {
             const container = document.getElementById('heartsContainer');
             const heart = document.createElement('div');
             heart.classList.add('falling-heart');
             heart.innerHTML = '❤';
 
-            // ကျပန်း နေရာ၊ အရွယ်အစား၊ ကျဆင်းနှုန်းနှင့် အရောင်အနုအရင့် သတ်မှတ်ခြင်း
             heart.style.left = Math.random() * 100 + 'vw';
-            const size = Math.random() * 16 + 10; // 10px မှ 26px အတွင်း
+            const size = Math.random() * 16 + 10;
             heart.style.fontSize = size + 'px';
 
-            const duration = Math.random() * 4 + 4; // 4 စက္ကန့်မှ 8 စက္ကန့်အတွင်း
+            const duration = Math.random() * 4 + 4;
             heart.style.animationDuration = duration + 's';
 
             const redShades = ['#d12d3c', '#e63946', '#ff4d6d', '#c9184a', '#ff758f'];
@@ -278,13 +526,11 @@
 
             container.appendChild(heart);
 
-            // အောက်ခြေရောက်ပြီးလျှင် ပြန်ဖျက်ပေးခြင်း (စက်မလေးစေရန်)
             setTimeout(() => {
                 heart.remove();
             }, duration * 1000);
         }
 
-        // 0.35 စက္ကန့်တိုင်း အသည်းပုံတစ်ခုစီ ဖန်တီးပေးမည်
         setInterval(createHeart, 350);
     </script>
 
